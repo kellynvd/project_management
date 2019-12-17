@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
   before_action :find_project
-  before_action :find_task, only: %i[show edit update destroy]
+  before_action :find_task, except: %i[create]
 
   def create
     @task = @project.tasks.create(task_params)
@@ -19,6 +19,11 @@ class TasksController < ApplicationController
       flash[:error] = 'Task was not deleted'
     end
     redirect_to @project
+  end
+
+  def complete
+    @task.update_attribute(:completed_at, Time.now)
+    redirect_to @project, notice: 'Task completed'
   end
 
   private
